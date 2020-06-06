@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		var ta=null;
+		var reader=null;
+		function updt()
+		{
+			window.location.hash=encodeURIComponent(ta.value);
+		}
+		function starter()
+		{
+			ta=document.getElementById("ta");
+			document.getElementsByTagName("div")[0].setAttribute("style","display: visible");
+			if(window.location.hash=="")
+				window.location.hash=encodeURIComponent("👋\nIt's a url # hash text editor\nThe editor works with utf-8 charset.\nEdit this text or load localfile or paste url with text in hash");
+			ta.value=decodeURIComponent(window.location.hash).substring(1);
+		}
+		function updt2(){
+			ta.value=decodeURIComponent(window.location.hash).substring(1);
+		}
+		function saveTxt(){
+			var a=document.createElement("a");
+			a.href="data:text/plain;charset=UTF-8," + encodeURIComponent(ta.value);
+			a.download=Math.random().toString().substring(2)+"_text.txt";
+			a.click();
+		}
+		function urlTxt(){
+			var a=document.createElement("a");
+			a.href="data:text/plain;charset=UTF-8," + encodeURIComponent(window.location.href);
+			a.download=Math.random().toString().substring(2)+"_url.txt";
+			a.click();
+		}
+		function localTxt(){
+			var inp=document.getElementById("inFile");
+			var in_file=inp.files[0];
+			reader = new FileReader();
+			reader.readAsText(in_file,'UTF-8');
+			console.log(reader.result);
+			reader.addEventListener("load", readyRead);
+		}
+		function readyRead()
+		{
+			ta.value=reader.result;
+			updt();
+		}
+		window.addEventListener("load", starter);
+		window.addEventListener('popstate', updt2);
+	</script>
+	<title>URL hash notes</title>
+	<mata charset="utf-8"/>
+</head>
+<body>
+<noscript>it's needs javascript</noscript>
+<div style="display: none;">
+	<textarea oninput="updt()" id="ta" style="width:100%; height:400px;"></textarea>
+	<input style="display: none;" onchange="localTxt()" id="inFile" type="file" accept=".txt"/>
+	<button onclick="saveTxt()">Save text as txt file</button>
+	<button onclick="urlTxt()">Save url as txt file</button>
+	<button onclick="document.getElementById('inFile').click();">Load text from local file</button>
+</div>
+</body>
+</html>
